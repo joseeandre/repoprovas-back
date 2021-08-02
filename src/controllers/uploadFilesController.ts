@@ -25,10 +25,10 @@ export async function uploadTest(req: Request, res: Response) {
     const { file, discipline, category, teacher, name } = req.body;
     const clientId = await getRepository(Sessions).find({ token });
     const testId = await (await getRepository(Test).insert({ discipline, category, teacher, name, userId: clientId[0].clientId })).generatedMaps[0];
-
+    console.log(testId);
     const fileRef = storage.ref().child(testId.id);
+    console.log(fileRef);
     await fileRef.put(file);
-    const user = await userService.getUsers();
     res.sendStatus(200);
   } catch (err) {
     console.error(err);
