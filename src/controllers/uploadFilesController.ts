@@ -22,12 +22,12 @@ export async function uploadTest(req: Request, res: Response) {
   try {
     if (!req.headers.authorization) return res.sendStatus(401);
     const token = req.headers.authorization.substring(7);
-    const { file, discipline, category, teacher, name } = req.body;
+    let { file, discipline, category, teacher, name } = req.body;
     const clientId = await getRepository(Sessions).find({ token });
     const testId = await (await getRepository(Test).insert({ discipline, category, teacher, name, userId: clientId[0].clientId })).generatedMaps[0];
-    console.log(testId);
+    file = JSON.parse(file)
+    console.log(file);
     const fileRef = storage.ref().child(file.id);
-    console.log(fileRef);
     await fileRef.put(file);
     res.sendStatus(200);
   } catch (err) {
