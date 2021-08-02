@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity("users")
+@Entity("clients")
 export default class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -10,4 +10,10 @@ export default class User {
 
   @Column()
   password: string;
+
+  @Column()
+  name: string;
+
+  @Column()
+  islogged: boolean;
 }
