@@ -6,6 +6,7 @@ import { v4 as uuid } from "uuid";
 import { runInNewContext } from "vm";
 import { getRepository } from "typeorm";
 import User from "../entities/User";
+import Sessions from "../entities/Sessions";
 
 interface UserCreate {
   name: string;
@@ -13,7 +14,6 @@ interface UserCreate {
   password: string;
   islogged: boolean;
 }
-
 
 export async function getUsers(req: Request, res: Response) {
   try {
@@ -70,6 +70,22 @@ export async function createUser(req: Request, res: Response) {
     }
   } catch (err) {
     console.error(err);
+    res.sendStatus(500);
+  }
+}
+
+export async function logoutUser(req: Request, res: Response) {
+  try {
+    if (!req.headers.authorization) return res.sendStatus(401);
+    const token = req.headers.authorization.substring(7);
+    const clientId = await getRepository(Sessions).find({ token });
+
+    await getRepository(Sessions).delete({ clientId: clientId[0].clientId });
+    await getRepository(User).update({ id: clientId[0].clientId }, { islogged: false });
+
+    res.sendStatus(200);
+  } catch (e) {
+    console.log(e);
     res.sendStatus(500);
   }
 }
