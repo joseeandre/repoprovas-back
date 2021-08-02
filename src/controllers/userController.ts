@@ -58,11 +58,11 @@ export async function createUser(req: Request, res: Response) {
     const { error } = signUpSchema.validate(req.body);
     if (!error) {
       const { name, email, password } = req.body;
-      const checkClient = await getRepository(User).find({ email: req.body.email });
+      const checkClient = await getRepository(User).find({ email });
       if (checkClient.length > 0) return res.sendStatus(409);
 
       const hash = bcrypt.hashSync(password, 10);
-      const task: UserCreate = { name, email, password, islogged: false };
+      const task: UserCreate = { name, email, password: hash, islogged: false };
       await getRepository(User).insert(task);
       res.sendStatus(201);
     } else {

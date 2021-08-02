@@ -6,7 +6,7 @@ export default class Sessions {
   id: number;
 
   @Column()
-  email: number;
+  clientId: number;
 
   @Column()
   token: string;
