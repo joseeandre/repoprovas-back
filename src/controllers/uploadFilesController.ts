@@ -25,7 +25,7 @@ export async function uploadTest(req: Request, res: Response) {
     const token = req.headers.authorization.substring(7);
     const { file, discipline, category, teacher, name } = req.body;
     const clientId = await getRepository(Sessions).find({ token });
-    const testId = await (await getRepository(Test).insert({ file, discipline, category, teacher, name, userId: clientId[0].clientId })).generatedMaps[0];
+    const testId = await (await getRepository(Test).insert({ discipline, category, teacher, name, userId: clientId[0].clientId })).generatedMaps[0];
 
     const fileRef = storage.ref().child(testId.id);
     await fileRef.put(file);
