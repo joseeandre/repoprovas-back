@@ -16,7 +16,6 @@ interface TestCreate {
   category: string;
   teacher: string;
   userId: number;
-  file: string;
 }
 
 export async function uploadTest(req: Request, res: Response) {

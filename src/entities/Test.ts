@@ -9,9 +9,6 @@ export default class User {
   name: string;
 
   @Column()
-  file: string;
-
-  @Column()
   discipline: string;
 
   @Column()
