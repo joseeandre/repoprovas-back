@@ -6,7 +6,6 @@ import { v4 as uuid } from "uuid";
 import { runInNewContext } from "vm";
 import { getRepository } from "typeorm";
 import User from "../entities/User";
-import { auth, storage, db } from "../firebase";
 import Test from "../entities/Test";
 import Sessions from "../entities/Sessions";
 
@@ -22,22 +21,10 @@ export async function uploadTest(req: Request, res: Response) {
   try {
     if (!req.headers.authorization) return res.sendStatus(401);
     const token = req.headers.authorization.substring(7);
-    let { discipline, category, teacher, name } = req.body;
+    let { discipline, category, teacher, name, fileName } = req.body;
     const clientId = await getRepository(Sessions).find({ token });
-    const testId = await (await getRepository(Test).insert({ discipline, category, teacher, name, userId: clientId[0].clientId })).generatedMaps[0];
+    const testId = await (await getRepository(Test).insert({ discipline, category, teacher, name, userId: clientId[0].clientId, fileName })).generatedMaps[0];
     res.send({ id: testId.id});
-  } catch (err) {
-    console.error(err);
-    res.sendStatus(500);
-  }
-}
-
-export async function uploadTestFile(req: Request, res: Response) {
-  try {
-    // const { formData } = req.body;
-    // const fileRef = storage.ref().child(file);
-    console.log(req.body);
-    res.sendStatus(200);
   } catch (err) {
     console.error(err);
     res.sendStatus(500);

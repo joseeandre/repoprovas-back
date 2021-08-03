@@ -19,4 +19,7 @@ export default class User {
 
   @Column()
   userId: number;
+
+  @Column()
+  fileName: string;
 }
