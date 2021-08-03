@@ -8,6 +8,7 @@ import { getRepository } from "typeorm";
 import User from "../entities/User";
 import Test from "../entities/Test";
 import Sessions from "../entities/Sessions";
+import { storage } from "../firebase";
 
 interface TestCreate {
   name: string;
@@ -33,8 +34,24 @@ export async function uploadTest(req: Request, res: Response) {
 
 export async function getTests(req: Request, res: Response) {
   try {
-    const tests = await getRepository(Test).find();
-    res.send(tests);
+    if (!req.headers.authorization) return res.sendStatus(401);
+    const token = req.headers.authorization.substring(7);
+    const testsDb = await getRepository(Test).find();
+    let testsAux: Object[] = [];
+    testsDb.forEach(
+      (item) => {
+      const url = storage.ref(item.fileName).getDownloadURL().then((response) => {
+          testsAux.push({
+              file: response,
+              name: item.name,
+              discipline: item.discipline,
+              teacher: item.teacher,
+              category: item.category,
+              id: item.id
+          });
+      })
+    });
+    res.send(testsAux);
   } catch (err) {
     console.error(err);
     res.sendStatus(500);
