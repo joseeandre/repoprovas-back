@@ -34,9 +34,9 @@ export async function uploadTest(req: Request, res: Response) {
 
 export async function uploadTestFile(req: Request, res: Response) {
   try {
-    const { formData } = req.body;
+    // const { formData } = req.body;
     // const fileRef = storage.ref().child(file);
-    console.log(formData);
+    console.log(req);
     res.sendStatus(200);
   } catch (err) {
     console.error(err);
