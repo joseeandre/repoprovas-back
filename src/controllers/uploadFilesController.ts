@@ -30,3 +30,13 @@ export async function uploadTest(req: Request, res: Response) {
     res.sendStatus(500);
   }
 }
+
+export async function getTests(req: Request, res: Response) {
+  try {
+    const tests = await getRepository(Test).find();
+    res.send(tests);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
+}
