@@ -18,6 +18,8 @@ app.post("/sign-in", userController.loginUser);
 app.post("/sign-up", userController.createUser);
 app.post("/logout", userController.logoutUser);
 app.post("/upload", uploadFilesController.uploadTest);
+app.post("/tests", uploadFilesController.getTests);
+
 
 export async function init () {
   await connectDatabase();
