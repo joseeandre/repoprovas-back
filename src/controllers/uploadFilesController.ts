@@ -46,23 +46,24 @@ export async function getTests(req: Request, res: Response) {
     if (!req.headers.authorization) return res.sendStatus(401);
     const token = req.headers.authorization.substring(7);
     const testsDb = await getRepository(Test).find();
-    let testsAux: Object[] = [];
-    testsDb.forEach(
-      (item) =>
-        async function () {
-          const url = await storage.ref(item.fileName).getDownloadURL();
-          testsAux.push({
-            file: url,
-            name: item.name,
-            discipline: item.discipline,
-            teacher: item.teacher,
-            category: item.category,
-            id: item.id,
-          });
-        }
-    );
-    console.log(testsAux)
-    res.send(testsAux);
+    const urls = await storage.ref().getDownloadURL();
+    // let testsAux: Object[] = [];
+    // testsDb.forEach(
+    //   (item) =>
+    //     async function () {
+    //       const url = await storage.ref(item.fileName).getDownloadURL();
+    //       testsAux.push({
+    //         file: url,
+    //         name: item.name,
+    //         discipline: item.discipline,
+    //         teacher: item.teacher,
+    //         category: item.category,
+    //         id: item.id,
+    //       });
+    //     }
+    // );
+    console.log(urls)
+    res.send(testsDb);
   } catch (err) {
     console.error(err);
     res.sendStatus(500);
