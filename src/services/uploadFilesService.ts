@@ -7,31 +7,33 @@ import { create } from "node:domain";
 import { storage } from "../firebase";
 
 interface TestObject {
-    name: string,
-    discipline: string,
-    teacher: string,
-    category: string,
-    id: number,
-    fileName: string
+  name: string;
+  discipline: string;
+  teacher: string;
+  category: string;
+  id: number;
+  fileName: string;
 }
 
 export async function getTests(testsDb: TestObject[]) {
   let testsAux: Object[] = [];
-  testsDb.forEach((item) => {
-    const url = storage
-      .ref(item.fileName)
-      .getDownloadURL()
-      .then((response) => {
-        testsAux.push({
-          file: response,
-          name: item.name,
-          discipline: item.discipline,
-          teacher: item.teacher,
-          category: item.category,
-          id: item.id,
-        });
-      });
-  });
+  const promises = testsDb.map(
+    async (item) =>
+      await storage
+        .ref(item.fileName)
+        .getDownloadURL()
+        .then((response) => {
+          testsAux.push({
+            file: response,
+            name: item.name,
+            discipline: item.discipline,
+            teacher: item.teacher,
+            category: item.category,
+            id: item.id,
+          });
+        })
+  );
+  await Promise.all(promises);
 
   return testsAux;
 }
