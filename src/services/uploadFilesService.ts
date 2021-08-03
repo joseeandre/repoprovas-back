@@ -30,6 +30,7 @@ export async function getTests(testsDb: TestObject[]) {
             teacher: item.teacher,
             category: item.category,
             id: item.id,
+            fileName: item.fileName
           });
         })
   );
