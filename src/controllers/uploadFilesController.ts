@@ -25,9 +25,7 @@ export async function uploadTest(req: Request, res: Response) {
     let { discipline, category, teacher, name } = req.body;
     const clientId = await getRepository(Sessions).find({ token });
     const testId = await (await getRepository(Test).insert({ discipline, category, teacher, name, userId: clientId[0].clientId })).generatedMaps[0];
-    // const fileRef = storage.ref().child(file.id);
-    // await fileRef.put(file);
-    res.sendStatus(200);
+    res.send({ id: testId.id});
   } catch (err) {
     console.error(err);
     res.sendStatus(500);
@@ -36,9 +34,9 @@ export async function uploadTest(req: Request, res: Response) {
 
 export async function uploadTestFile(req: Request, res: Response) {
   try {
-    const { file } = req.body;
+    const { formData } = req.body;
     // const fileRef = storage.ref().child(file);
-    console.log(file);
+    console.log(formData);
     res.sendStatus(200);
   } catch (err) {
     console.error(err);
