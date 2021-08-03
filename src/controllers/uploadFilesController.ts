@@ -61,6 +61,7 @@ export async function getTests(req: Request, res: Response) {
           });
         }
     );
+    console.log(testsAux)
     res.send(testsAux);
   } catch (err) {
     console.error(err);
