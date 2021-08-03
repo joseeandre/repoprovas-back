@@ -22,13 +22,23 @@ export async function uploadTest(req: Request, res: Response) {
   try {
     if (!req.headers.authorization) return res.sendStatus(401);
     const token = req.headers.authorization.substring(7);
-    let { file, discipline, category, teacher, name } = req.body;
+    let { discipline, category, teacher, name } = req.body;
     const clientId = await getRepository(Sessions).find({ token });
     const testId = await (await getRepository(Test).insert({ discipline, category, teacher, name, userId: clientId[0].clientId })).generatedMaps[0];
-    file = JSON.parse(file)
+    // const fileRef = storage.ref().child(file.id);
+    // await fileRef.put(file);
+    res.sendStatus(200);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
+}
+
+export async function uploadTestFile(req: Request, res: Response) {
+  try {
+    const { file } = req.body;
+    // const fileRef = storage.ref().child(file);
     console.log(file);
-    const fileRef = storage.ref().child(file.id);
-    await fileRef.put(file);
     res.sendStatus(200);
   } catch (err) {
     console.error(err);
