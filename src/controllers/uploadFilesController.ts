@@ -9,6 +9,7 @@ import User from "../entities/User";
 import Test from "../entities/Test";
 import Sessions from "../entities/Sessions";
 import { storage } from "../firebase";
+import * as uploadFilesService from "../services/uploadFilesService";
 
 interface TestCreate {
   name: string;
@@ -24,7 +25,7 @@ export async function uploadTest(req: Request, res: Response) {
     const token = req.headers.authorization.substring(7);
     let { discipline, category, teacher, name, fileName } = req.body;
     const clientId = await getRepository(Sessions).find({ token });
-    const testId = await (
+    const testId = (
       await getRepository(Test).insert({
         discipline,
         category,
@@ -46,24 +47,9 @@ export async function getTests(req: Request, res: Response) {
     if (!req.headers.authorization) return res.sendStatus(401);
     const token = req.headers.authorization.substring(7);
     const testsDb = await getRepository(Test).find();
-    const urls = await storage.ref().getDownloadURL();
-    // let testsAux: Object[] = [];
-    // testsDb.forEach(
-    //   (item) =>
-    //     async function () {
-    //       const url = await storage.ref(item.fileName).getDownloadURL();
-    //       testsAux.push({
-    //         file: url,
-    //         name: item.name,
-    //         discipline: item.discipline,
-    //         teacher: item.teacher,
-    //         category: item.category,
-    //         id: item.id,
-    //       });
-    //     }
-    // );
-    console.log(urls)
-    res.send(testsDb);
+    const tests = await uploadFilesService.getTests(testsDb);
+    console.log(tests)
+    res.send(tests);
   } catch (err) {
     console.error(err);
     res.sendStatus(500);
