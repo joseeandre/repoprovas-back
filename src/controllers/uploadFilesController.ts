@@ -24,8 +24,17 @@ export async function uploadTest(req: Request, res: Response) {
     const token = req.headers.authorization.substring(7);
     let { discipline, category, teacher, name, fileName } = req.body;
     const clientId = await getRepository(Sessions).find({ token });
-    const testId = await (await getRepository(Test).insert({ discipline, category, teacher, name, userId: clientId[0].clientId, fileName })).generatedMaps[0];
-    res.send({ id: testId.id});
+    const testId = await (
+      await getRepository(Test).insert({
+        discipline,
+        category,
+        teacher,
+        name,
+        userId: clientId[0].clientId,
+        fileName,
+      })
+    ).generatedMaps[0];
+    res.send({ id: testId.id });
   } catch (err) {
     console.error(err);
     res.sendStatus(500);
@@ -39,18 +48,19 @@ export async function getTests(req: Request, res: Response) {
     const testsDb = await getRepository(Test).find();
     let testsAux: Object[] = [];
     testsDb.forEach(
-      (item) => {
-      const url = storage.ref(item.fileName).getDownloadURL().then((response) => {
+      (item) =>
+        async function () {
+          const url = await storage.ref(item.fileName).getDownloadURL();
           testsAux.push({
-              file: response,
-              name: item.name,
-              discipline: item.discipline,
-              teacher: item.teacher,
-              category: item.category,
-              id: item.id
+            file: url,
+            name: item.name,
+            discipline: item.discipline,
+            teacher: item.teacher,
+            category: item.category,
+            id: item.id,
           });
-      })
-    });
+        }
+    );
     res.send(testsAux);
   } catch (err) {
     console.error(err);
