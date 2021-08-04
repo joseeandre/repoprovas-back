@@ -39,3 +39,20 @@ export async function getTests() {
 
   return testsAux;
 }
+
+export async function getTeacher() {
+  const teachers = await getRepository(Teacher).find();
+  let teachersAux: Object[] = [];
+  const promises = teachers.map(
+    async (item) => {
+      const teacherFiles = await getRepository(Test).find({ teacherId: item.id });
+      teachersAux.push({
+        teacher: item.name,
+        disciplines: teacherFiles.length
+      })
+    }
+  );
+  await Promise.all(promises);
+
+  return teachersAux;
+}
