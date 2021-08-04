@@ -50,8 +50,7 @@ export async function getTests(req: Request, res: Response) {
   try {
     if (!req.headers.authorization) return res.sendStatus(401);
     const token = req.headers.authorization.substring(7);
-    const testsDb = await getRepository(Test).find();
-    const tests = await uploadFilesService.getTests(testsDb);
+    const tests = await uploadFilesService.getTests();
     console.log(tests)
     res.send(tests);
   } catch (err) {
