@@ -98,3 +98,16 @@ export async function getTeacher(req: Request, res: Response) {
     res.sendStatus(500);
   }
 }
+
+export async function getCategories(req: Request, res: Response) {
+  try {
+    if (!req.headers.authorization) return res.sendStatus(401);
+    const name = req.params.id;
+    const token = req.headers.authorization.substring(7);
+    const categories = await uploadFilesService.getCategories();
+    res.send(categories);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
+}
