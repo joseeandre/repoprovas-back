@@ -64,7 +64,7 @@ export async function getDisciplines(req: Request, res: Response) {
   try {
     if (!req.headers.authorization) return res.sendStatus(401);
     const token = req.headers.authorization.substring(7);
-    const disciplines = await getRepository(Discipline).find({select: ["name"]});
+    const disciplines = await getRepository(Discipline).find();
     res.send(disciplines);
   } catch (err) {
     console.error(err);
@@ -77,7 +77,7 @@ export async function getTeachers(req: Request, res: Response) {
     if (!req.headers.authorization) return res.sendStatus(401);
     const disciplineId = req.params.id;
     const token = req.headers.authorization.substring(7);
-    const teachers = await getRepository(Discipline).find({select: ["name"], where: {disciplineId}});
+    const teachers = await getRepository(Teacher).find({disciplineId: parseInt(disciplineId)});
     res.send(teachers);
   } catch (err) {
     console.error(err);
