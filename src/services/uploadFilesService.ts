@@ -62,7 +62,7 @@ export async function getTeacher() {
 
 export async function getCategories() {
   const tests = await getRepository(Test).find();
-  const categories = await this.createQueryBuilder(Test).select('categoryId').distinct(true).getRawMany();
+  const categories = await getRepository(Test).createQueryBuilder("categoryId").distinctOn(["user.id"]);
   // let categoriesAux: Object[] = [];
   // const promises = teachers.map(async (item) => {
   //   const teacherFiles = await getRepository(Test).find({ teacherId: item.id });
