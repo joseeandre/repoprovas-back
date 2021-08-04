@@ -84,6 +84,6 @@ export async function getCategories() {
     }
   });
   await Promise.all(promises);
-  console.log(categories)
-  return categories;
+  console.log(categoriesAux)
+  return categoriesAux;
 }
