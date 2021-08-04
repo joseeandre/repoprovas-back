@@ -37,6 +37,7 @@ export async function uploadTest(req: Request, res: Response) {
         name,
         userId: clientId[0].clientId,
         fileName,
+        index: category
       })
     ).generatedMaps[0];
     res.send({ id: testId.id });

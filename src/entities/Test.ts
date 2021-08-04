@@ -22,4 +22,7 @@ export default class Test{
 
   @Column()
   fileName: string;
+
+  @Column()
+  index: string;
 }

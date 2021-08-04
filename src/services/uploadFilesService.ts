@@ -30,7 +30,8 @@ export async function getTests() {
             teacherId: teacher[0].name,
             categoryId: category[0].name,
             id: item.id,
-            fileName: item.fileName
+            fileName: item.fileName,
+            index: item.index
         });
         })
       }
