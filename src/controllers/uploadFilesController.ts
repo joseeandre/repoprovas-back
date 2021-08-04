@@ -7,6 +7,8 @@ import { runInNewContext } from "vm";
 import { getRepository } from "typeorm";
 import User from "../entities/User";
 import Test from "../entities/Test";
+import Discipline from "../entities/Discipline";
+import Teacher from "../entities/Teacher";
 import Sessions from "../entities/Sessions";
 import { storage } from "../firebase";
 import * as uploadFilesService from "../services/uploadFilesService";
@@ -25,11 +27,13 @@ export async function uploadTest(req: Request, res: Response) {
     const token = req.headers.authorization.substring(7);
     let { discipline, category, teacher, name, fileName } = req.body;
     const clientId = await getRepository(Sessions).find({ token });
+    const disciplineId = await getRepository(Discipline).find({ name: discipline });
+    const teacherId = await getRepository(Teacher).find({ name: teacher });
     const testId = (
       await getRepository(Test).insert({
-        discipline,
-        category,
-        teacher,
+        disciplineId: disciplineId[0].id,
+        categoryId: disciplineId[0].categoryId,
+        teacherId: teacherId[0].id,
         name,
         userId: clientId[0].clientId,
         fileName,
@@ -50,6 +54,31 @@ export async function getTests(req: Request, res: Response) {
     const tests = await uploadFilesService.getTests(testsDb);
     console.log(tests)
     res.send(tests);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
+}
+
+export async function getDisciplines(req: Request, res: Response) {
+  try {
+    if (!req.headers.authorization) return res.sendStatus(401);
+    const token = req.headers.authorization.substring(7);
+    const disciplines = await getRepository(Discipline).find({select: ["name"]});
+    res.send(disciplines);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
+}
+
+export async function getTeachers(req: Request, res: Response) {
+  try {
+    if (!req.headers.authorization) return res.sendStatus(401);
+    const disciplineId = req.params.id;
+    const token = req.headers.authorization.substring(7);
+    const teachers = await getRepository(Discipline).find({select: ["name"], where: {disciplineId}});
+    res.send(teachers);
   } catch (err) {
     console.error(err);
     res.sendStatus(500);

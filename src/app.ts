@@ -18,7 +18,9 @@ app.post("/sign-in", userController.loginUser);
 app.post("/sign-up", userController.createUser);
 app.post("/logout", userController.logoutUser);
 app.post("/upload", uploadFilesController.uploadTest);
-app.post("/tests", uploadFilesController.getTests);
+app.get("/tests", uploadFilesController.getTests);
+app.get("/disciplines", uploadFilesController.getDisciplines;
+app.get("/teachers/:id", uploadFilesController.getTeachers);
 
 
 export async function init () {
