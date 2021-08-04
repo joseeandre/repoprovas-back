@@ -75,9 +75,10 @@ export async function getDisciplines(req: Request, res: Response) {
 export async function getTeachers(req: Request, res: Response) {
   try {
     if (!req.headers.authorization) return res.sendStatus(401);
-    const disciplineId = req.params.id;
+    const name = req.params.id;
     const token = req.headers.authorization.substring(7);
-    const teachers = await getRepository(Teacher).find({disciplineId: parseInt(disciplineId)});
+    const disciplineId = await getRepository(Discipline).find({ name });
+    const teachers = await getRepository(Teacher).find({disciplineId: disciplineId[0].id});
     res.send(teachers);
   } catch (err) {
     console.error(err);
