@@ -13,29 +13,31 @@ import Category from "../entities/Category";
 export async function getTests() {
   const testsDb = await getRepository(Test).find();
   let testsAux: Object[] = [];
-  const promises = testsDb.map(
-    async (item) => {
-      const teacher = await getRepository(Teacher).find({ id: item.teacherId });
-      const discipline = await getRepository(Discipline).find({ id: item.disciplineId });
-      const category = await getRepository(Category).find({ id: item.categoryId });
+  const promises = testsDb.map(async (item) => {
+    const teacher = await getRepository(Teacher).find({ id: item.teacherId });
+    const discipline = await getRepository(Discipline).find({
+      id: item.disciplineId,
+    });
+    const category = await getRepository(Category).find({
+      id: item.categoryId,
+    });
 
-      await storage
-        .ref(item.fileName)
-        .getDownloadURL()
-        .then((response) => {
-          testsAux.push({
-            file: response,
-            name: item.name,
-            discipline: discipline[0].name,
-            teacherId: teacher[0].name,
-            categoryId: category[0].name,
-            id: item.id,
-            fileName: item.fileName,
-            index: item.index
+    await storage
+      .ref(item.fileName)
+      .getDownloadURL()
+      .then((response) => {
+        testsAux.push({
+          file: response,
+          name: item.name,
+          discipline: discipline[0].name,
+          teacherId: teacher[0].name,
+          categoryId: category[0].name,
+          id: item.id,
+          fileName: item.fileName,
+          index: item.index,
         });
-        })
-      }
-  );
+      });
+  });
   await Promise.all(promises);
 
   return testsAux;
@@ -44,16 +46,32 @@ export async function getTests() {
 export async function getTeacher() {
   const teachers = await getRepository(Teacher).find();
   let teachersAux: Object[] = [];
-  const promises = teachers.map(
-    async (item) => {
-      const teacherFiles = await getRepository(Test).find({ teacherId: item.id });
+  const promises = teachers.map(async (item) => {
+    const teacherFiles = await getRepository(Test).find({ teacherId: item.id });
+    if (teacherFiles.length > 0) {
       teachersAux.push({
         teacher: item.name,
-        disciplines: teacherFiles.length
-      })
+        disciplines: teacherFiles.length,
+      });
     }
-  );
+  });
   await Promise.all(promises);
 
   return teachersAux;
+}
+
+export async function getCategories() {
+  const tests = await getRepository(Test).find();
+  const categories = await this.createQueryBuilder(Test).select('categoryId').distinct(true).getRawMany();
+  // let categoriesAux: Object[] = [];
+  // const promises = teachers.map(async (item) => {
+  //   const teacherFiles = await getRepository(Test).find({ teacherId: item.id });
+  //   teachersAux.push({
+  //     teacher: item.name,
+  //     disciplines: teacherFiles.length,
+  //   });
+  // });
+  // await Promise.all(promises);
+  console.log(categories)
+  return categories;
 }
