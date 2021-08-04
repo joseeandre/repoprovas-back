@@ -61,17 +61,29 @@ export async function getTeacher() {
 }
 
 export async function getCategories() {
-  const tests = await getRepository(Test).find();
-  const categories = await getRepository(Test).createQueryBuilder("categoryId").distinctOn(["user.id"]);
-  // let categoriesAux: Object[] = [];
-  // const promises = teachers.map(async (item) => {
-  //   const teacherFiles = await getRepository(Test).find({ teacherId: item.id });
-  //   teachersAux.push({
-  //     teacher: item.name,
-  //     disciplines: teacherFiles.length,
-  //   });
-  // });
-  // await Promise.all(promises);
+  const categories = await getRepository(Category).find();
+  let categoriesAux: Object[] = [];
+  const promises = categories.map(async (item) => {
+    const disciplines = await getRepository(Discipline).find({ categoryId: item.id});
+    let disciplinesAux: Object[] = [];
+    const promisesAux = disciplines.map(async (discipline) =>{
+      const disciplinesFiles = await getRepository(Test).find({ disciplineId: discipline.id});
+      if (disciplinesFiles.length > 0) {
+        disciplinesAux.push({
+          discipline: discipline.name,
+          files: disciplinesFiles.length,
+        });
+      }
+    })
+    await Promise.all(promisesAux);
+    if (disciplinesAux.length > 0) {
+      categoriesAux.push({
+        category: item.name,
+        disciplines: disciplinesAux
+      });
+    }
+  });
+  await Promise.all(promises);
   console.log(categories)
   return categories;
 }
