@@ -8,11 +8,12 @@ import { storage } from "../firebase";
 
 interface TestObject {
   name: string;
-  discipline: string;
-  teacher: string;
-  category: string;
+  disciplineId: number;
+  teacherId: number;
+  categoryId: number;
   id: number;
   fileName: string;
+  userId: number
 }
 
 export async function getTests(testsDb: TestObject[]) {
@@ -26,9 +27,9 @@ export async function getTests(testsDb: TestObject[]) {
           testsAux.push({
             file: response,
             name: item.name,
-            discipline: item.discipline,
-            teacher: item.teacher,
-            category: item.category,
+            disciplineId: item.disciplineId,
+            teacherId: item.teacherId,
+            categoryId: item.categoryId,
             id: item.id,
             fileName: item.fileName
           });

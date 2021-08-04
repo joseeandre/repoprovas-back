@@ -19,7 +19,7 @@ app.post("/sign-up", userController.createUser);
 app.post("/logout", userController.logoutUser);
 app.post("/upload", uploadFilesController.uploadTest);
 app.get("/tests", uploadFilesController.getTests);
-app.get("/disciplines", uploadFilesController.getDisciplines;
+app.get("/disciplines", uploadFilesController.getDisciplines);
 app.get("/teachers/:id", uploadFilesController.getTeachers);
 
 
