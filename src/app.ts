@@ -22,6 +22,7 @@ app.get("/tests", uploadFilesController.getTests);
 app.get("/disciplines", uploadFilesController.getDisciplines);
 app.get("/teachers/:id", uploadFilesController.getTeachers);
 app.get("/teacher", uploadFilesController.getTeacher);
+app.get("/categories", uploadFilesController.getCategories);
 
 
 export async function init () {
