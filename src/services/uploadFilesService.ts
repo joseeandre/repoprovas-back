@@ -5,21 +5,20 @@ import Sessions from "../entities/Sessions";
 import { v4 as uuid } from "uuid";
 import { create } from "node:domain";
 import { storage } from "../firebase";
+import Test from "../entities/Test";
+import Discipline from "../entities/Discipline";
+import Teacher from "../entities/Teacher";
+import Category from "../entities/Category";
 
-interface TestObject {
-  name: string;
-  disciplineId: number;
-  teacherId: number;
-  categoryId: number;
-  id: number;
-  fileName: string;
-  userId: number
-}
-
-export async function getTests(testsDb: TestObject[]) {
+export async function getTests() {
+  const testsDb = await getRepository(Test).find();
   let testsAux: Object[] = [];
   const promises = testsDb.map(
-    async (item) =>
+    async (item) => {
+      const teacher = await getRepository(Teacher).find({ id: item.teacherId });
+      const discipline = await getRepository(Discipline).find({ id: item.disciplineId });
+      const category = await getRepository(Category).find({ id: item.categoryId });
+
       await storage
         .ref(item.fileName)
         .getDownloadURL()
@@ -27,13 +26,14 @@ export async function getTests(testsDb: TestObject[]) {
           testsAux.push({
             file: response,
             name: item.name,
-            disciplineId: item.disciplineId,
-            teacherId: item.teacherId,
-            categoryId: item.categoryId,
+            discipline: discipline[0].name,
+            teacherId: teacher[0].name,
+            categoryId: category[0].name,
             id: item.id,
             fileName: item.fileName
-          });
+        });
         })
+      }
   );
   await Promise.all(promises);
 
